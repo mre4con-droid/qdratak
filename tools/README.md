@@ -27,6 +27,7 @@ python3 tools/check_pages.py   # فحص الصفحات في متصفح حقيق�
 | `link_tahsili.py` | ربط المسار من `index.html` و`sitemap.xml` (غير تراكمي) |
 | `authoring.py` | مساعدات كتابة المحتوى |
 | `check_pages.py` | فحص الصفحات في Chromium: أخطاء JS والعرض والتحقق |
+| `build_preview.py` | تجهيز نسخة معاينة بروابط نسبية للنشر خارج النطاق |
 
 ## المحتوى
 
@@ -90,3 +91,16 @@ python3 tools/build_plans.py
 ```bash
 python3 tools/check_entitlement.py   # يعيد العلم لوضع التجربة بعد الفحص
 ```
+
+## معاينة خارج النطاق
+
+صفحات الموقع تستعمل مسارات مطلقة (`/tahsili/`، `/favicon.png` …) تصلح لجذر
+النطاق وحده، فلا تعمل إذا نُشرت تحت مسار فرعي أو على نطاق آخر:
+
+```bash
+python3 tools/build_preview.py /tmp/preview
+```
+
+ينسخ الموقع ويحوّل كل مرجع مطلق إلى نسبي حسب عمق الملف. يستثني `checkout/`
+لأنها تحمّل نموذج دفع حقيقي لا محل له في معاينة، ويستثني `tools/` و`content/`
+لأنهما مصدر البناء لا ناتجه.
