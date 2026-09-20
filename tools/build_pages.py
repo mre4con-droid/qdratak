@@ -36,7 +36,7 @@ def footer(label):
 # ------------------------------------------------------- صفحة التحصيلي الرئيسية
 
 LANDING_CSS = """
-  .track-block { background: var(--paper); border: 1px solid var(--border); border-radius: 16px;
+  .track-block { scroll-margin-top: 20px; background: var(--paper); border: 1px solid var(--border); border-radius: 16px;
     padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
   .track-block h2 { margin: 0 0 4px; font-size: 21px; }
   .track-block .track-sub { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 14px; }
@@ -62,7 +62,7 @@ def build_landing(bp, stats):
                       f'<b>{meta["name"]}</b>'
                       f'<span>{bt.ar(n)} سؤالًا مع الشرح والأمثلة</span></a>')
         blocks += f"""
-    <div class="track-block">
+    <div class="track-block" id="{tid}">
       <h2>{track["name"]}</h2>
       <p class="track-sub">{track["description"]}
          — {bt.ar(track["total_questions"])} سؤالًا في {bt.ar(track["duration_minutes"])} دقيقة.</p>
