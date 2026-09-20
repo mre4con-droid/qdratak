@@ -67,3 +67,21 @@ def background_svg():
     if not m:
         raise RuntimeError("خلفية الصفحة غير موجودة في الأنماط")
     return m.group(1)
+
+
+REF_SIM = os.path.join(ROOT, "simulator", "index.html")
+
+
+def simulator_css():
+    """ورقة أنماط المحاكي المشتركة (كتلة <style> الأولى في صفحة المحاكي)."""
+    return _blocks(read(REF_SIM), "style")[0][2]
+
+
+def simulator_assistant():
+    """وحدة المساعد الذكي بإعدادات المحاكي (بلا مسح البطاقات)."""
+    html = read(REF_SIM)
+    start = html.find("<!-- AI-ASSISTANT-MODULE:START")
+    end = html.find("<!-- AI-ASSISTANT-MODULE:END -->")
+    if start < 0 or end < 0:
+        raise RuntimeError("علامات وحدة المساعد الذكي غير موجودة في صفحة المحاكي")
+    return html[start:end + len("<!-- AI-ASSISTANT-MODULE:END -->")]
