@@ -2110,8 +2110,12 @@
   // ============ نظام حساب الطالب (تجريبي — غير آمن، لأغراض العرض والتجربة فقط) ============
   var PROFILES_KEY = "qudurat_profiles";
   var CURRENT_PROFILE_KEY = "qudurat_current_profile_id";
-  var PLAN_DURATIONS = { "0": 0, "69": 30, "99": 60, "120": 90 };
-  var PLAN_LABELS = { "0": "التشخيص المجاني", "69": "خطة الشهر (٣٠ يومًا)", "99": "خطة الشهرين (٦٠ يومًا)", "120": "خطة ٣ أشهر (٩٠ يومًا)" };
+/* PLANS:BEGIN */
+  var PLAN_DURATIONS = { "0": 0, "69": 30, "99": 60, "120": 90, "149": 90 };
+  var PLAN_LABELS = { "0": "التشخيص المجاني", "69": "خطة الشهر (٣٠ يومًا)", "99": "خطة الشهرين (٦٠ يومًا)", "120": "خطة ٣ أشهر (٩٠ يومًا)", "149": "الباقة الشاملة (٩٠ يومًا)" };
+  // المسارات التي تفتحها كل باقة — تُقرأ من content/plans.json
+  var PLAN_TRACKS = { "0": ["qudurat"], "69": ["qudurat"], "99": ["qudurat"], "120": ["qudurat"], "149": ["qudurat", "tahsili"] };
+/* PLANS:END */
 
   function loadProfiles() {
     try { return JSON.parse(safeGet(PROFILES_KEY) || "{}"); } catch (e) { return {}; }

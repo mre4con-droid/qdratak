@@ -55,3 +55,38 @@ python3 tools/check_pages.py   # فحص الصفحات في متصفح حقيق�
 
 احرص أن يبلغ بنك كل مادة حصتها في `blueprint.json` على الأقل، وإلا استكمل المحاكي
 العدد من مواد أخرى وانحرف التوزيع عن المخطط.
+
+## الباقات والصلاحيات
+
+`content/plans.json` هو **المصدر الوحيد** لكتالوج الباقات. كان مكررًا في خمسة
+مواضع (قسم الأسعار، قائمة صفحة الدفع، `planNames`، قائمة الباقات المسموحة،
+و`PLAN_DURATIONS` في المحاكي)، فصار يُنشر منه:
+
+```bash
+python3 tools/build_plans.py
+```
+
+معرّف الباقة **هو سعرها** بالريال كنص، كما تعتمده صفحة الدفع — فتغيير السعر
+يعني تغيير `id` و`price` معًا.
+
+حقل `tracks` في كل باقة يحدد ما تفتحه: `["qudurat"]` أو `["qudurat","tahsili"]`.
+
+### علم الحماية
+
+`tools/entitlement.py` فيه `REQUIRES_SUBSCRIPTION`، وهو الآن `False` ليوافق وضع
+المنصة: مسار القدرات نفسه في تجربة مجانية
+(`COURSES_CATALOG_REQUIRES_SUBSCRIPTION = false` و`AI_TRIAL_MODE = true`).
+
+**يوم الإطلاق** تُرفع الأعلام الثلاثة معًا وإلا تناقض المساران:
+
+| العلم | الملف |
+|---|---|
+| `REQUIRES_SUBSCRIPTION` | `tools/entitlement.py` ثم إعادة البناء |
+| `COURSES_CATALOG_REQUIRES_SUBSCRIPTION` | `simulator/index.html` |
+| `AI_TRIAL_MODE` | `simulator/index.html` وصفحات الدورات |
+
+للتحقق من سلوك الحماية في الوضعين:
+
+```bash
+python3 tools/check_entitlement.py   # يعيد العلم لوضع التجربة بعد الفحص
+```

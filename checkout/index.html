@@ -148,11 +148,13 @@
     <div class="card">
       <h2>ملخص الطلب</h2>
       <select id="plan-select">
+<!-- PLANS:BEGIN -->
         <option value="0">التشخيص المجاني — ٠ ريال</option>
         <option value="69" selected>خطة الشهر (٣٠ يومًا) — ٦٩ ريالًا</option>
         <option value="99">خطة الشهرين (٦٠ يومًا) — ٩٩ ريالًا</option>
         <option value="120">خطة ٣ أشهر (٩٠ يومًا) — ١٢٠ ريالًا</option>
-      </select>
+        <option value="149">الباقة الشاملة (٩٠ يومًا) — ١٤٩ ريالًا</option>
+      <!-- PLANS:END --></select>
       <div class="summary-row"><span>الباقة</span><span id="s-plan">خطة الشهر</span></div>
       <div class="summary-row total"><span>الإجمالي</span><span id="s-total">٦٩ ريال</span></div>
     </div>
@@ -209,7 +211,10 @@
     }
   }
 
-  var planNames = { "0": "التشخيص المجاني", "69": "خطة الشهر", "99": "خطة الشهرين", "120": "خطة ٣ أشهر" };
+/* PLANS:BEGIN */
+  var planNames = { "0": "التشخيص المجاني", "69": "خطة الشهر", "99": "خطة الشهرين", "120": "خطة ٣ أشهر", "149": "الباقة الشاملة" };
+  var PLAN_IDS = ["0", "69", "99", "120", "149"];
+/* PLANS:END */
   function updateSummary() {
     var val = document.getElementById("plan-select").value;
     var price = parseInt(val, 10) || 0;
@@ -247,7 +252,7 @@
       var params = new URLSearchParams(location.search);
       var plan = params.get("plan");
       var select = document.getElementById("plan-select");
-      if (plan && ["0", "69", "99", "120"].indexOf(plan) !== -1) select.value = plan;
+      if (plan && PLAN_IDS.indexOf(plan) !== -1) select.value = plan;
       var name = params.get("name");
       if (name) {
         var h1 = document.querySelector(".wrap h1");

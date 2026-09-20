@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import chrome  # noqa: E402
 import build_tahsili as bt  # noqa: E402
+import entitlement  # noqa: E402
 
 SITE = bt.SITE
 
@@ -188,6 +189,7 @@ ENGINE = r"""
   }
 
   window.startExam = function (trackId) {
+    if (window.tahsiliRequire && !window.tahsiliRequire()) return;
     var t = BLUEPRINT[trackId];
     var questions = pickQuestions(trackId);
     if (!questions.length) {
@@ -394,6 +396,7 @@ def build(bp, pools):
             + body
             + "\n<script>" + engine + "</script>\n"
             + "<script>" + chrome.report_script() + "</script>\n"
+            + entitlement.script()
             + chrome.simulator_assistant()
             + "\n</body>\n</html>\n")
     bt.write(os.path.join(bt.OUT, "simulator", "index.html"), html)

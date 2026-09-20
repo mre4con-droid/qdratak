@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import chrome  # noqa: E402
 import build_tahsili as bt  # noqa: E402
+import entitlement  # noqa: E402
 
 SITE = bt.SITE
 
@@ -93,6 +94,7 @@ def build_landing(bp, stats):
 {blocks}
 </div>
 {footer("التحصيلي")}
+{entitlement.script()}
 </body>
 </html>
 """
@@ -150,6 +152,7 @@ BANK_ENGINE = r"""
   };
 
   window.selectBranch = function (bid) {
+    if (window.tahsiliRequire && !window.tahsiliRequire()) return;
     current.branch = bid;
     var d = DATA[current.track][current.subject];
     var branch = d.branches.filter(function (b) { return b.id === bid; })[0];
@@ -260,6 +263,7 @@ def build_bank(bp, subjects):
 
 <script>{engine}</script>
 <script>{chrome.report_script()}</script>
+{entitlement.script()}
 {bt.assistant_for("التحصيلي")}
 </body>
 </html>

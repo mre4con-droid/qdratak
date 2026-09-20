@@ -15,6 +15,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import chrome  # noqa: E402
+import entitlement  # noqa: E402
 
 ROOT = chrome.ROOT
 CONTENT = os.path.join(ROOT, "content", "tahsili")
@@ -263,6 +264,7 @@ COURSE_ENGINE = """
   };
 
   window.checkBank = function (bank) {
+    if (window.tahsiliRequire && !window.tahsiliRequire()) return;
     var st = state[bank];
     st.checked = true;
     var correctCount = 0;
@@ -383,6 +385,7 @@ def build_course(track_id, track, subject_meta, data):
 
 <script>{engine}</script>
 <script>{chrome.report_script()}</script>
+{entitlement.script()}
 {assistant_for(name)}
 </body>
 </html>
