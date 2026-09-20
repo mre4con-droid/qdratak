@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""ربط مسار التحصيلي من الموقع الرئيسي: رابط في الترويسة، وقسم في الصفحة
-الرئيسية، ومدخلات في خريطة الموقع. العملية غير تراكمية — تكرار تشغيلها لا يكرر
-الإضافات."""
+"""ربط مسار التحصيلي من الموقع الرئيسي: قسم في الصفحة الرئيسية ومدخلات في
+خريطة الموقع. القائمة العلوية يملكها tools/build_nav.py. العملية غير تراكمية."""
 import os
 import re
 import sys
@@ -12,12 +11,10 @@ import build_tahsili as bt  # noqa: E402
 ROOT = bt.ROOT
 MARK = "<!-- TAHSILI-LINK -->"
 
-NAV_LINK = f'      <a href="/tahsili/">التحصيلي</a>{MARK}\n'
-
 BANNER = """
 <section id="tahsili">%s
   <div class="wrap">
-    <div class="try-banner" style="background: var(--ink); flex-direction:column; align-items:stretch;">
+    <div class="try-banner" style="background: var(--ink); flex-direction:column; align-items:stretch; flex-wrap:nowrap;">
       <div>
         <h2>وتستعد للتحصيلي كمان؟ المسار جاهز</h2>
         <p>مسار كامل لاختبار التحصيل الدراسي بنفس أدوات القدرات: دورة لكل مادة فيها شرح
@@ -40,18 +37,13 @@ def patch_index():
     if MARK in html:
         print("  — index.html: الربط موجود مسبقًا")
         return
-    # رابط الترويسة بعد بنك الأسئلة
-    anchor = '      <a href="/question-bank/">بنك الأسئلة</a>\n'
-    if anchor not in html:
-        raise RuntimeError("تعذّر العثور على موضع رابط الترويسة في index.html")
-    html = html.replace(anchor, anchor + NAV_LINK, 1)
-    # قسم التحصيلي بعد قسم الدورات
+    # قسم التحصيلي (القائمة يملكها tools/build_nav.py)
     close = '<!-- قسم آراء الطلاب'
     if close not in html:
         raise RuntimeError("تعذّر العثور على نهاية قسم الدورات في index.html")
     html = html.replace(close, BANNER + "\n" + close, 1)
     bt.write_text(path, html)
-    print("  ✓ index.html: رابط الترويسة وقسم التحصيلي")
+    print("  ✓ index.html: قسم التحصيلي")
 
 
 def patch_sitemap(bp):
