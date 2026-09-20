@@ -94,12 +94,18 @@ def head(title, desc, canonical, extra_css=""):
 
 
 def nav(home="/tahsili/", label="التحصيلي"):
+    """ترويسة مكتفية بذاتها.
+
+    أبعاد الشعار مكتوبة في السطر لا في ورقة الأنماط: قاعدة `.brand-mark img`
+    موجودة في أنماط الدورات وبنك الأسئلة وغائبة عن أنماط المحاكي، فالاعتماد
+    عليها يجعل الشعار يظهر بحجمه الطبيعي في بعض الصفحات دون بعض.
+    """
     a, b = chrome.logos()
     return f"""
 <nav>
   <div class="wrap nav-row">
-    <a class="brand-mark" href="/" style="text-decoration:none;" aria-label="قدراتك — الصفحة الرئيسية">
-      <img src="{a}" alt="قدراتك">
+    <a class="brand-mark" href="/" style="text-decoration:none; margin-bottom:0;" aria-label="قدراتك — الصفحة الرئيسية">
+      <img src="{a}" alt="قدراتك" style="height:24px; width:auto; display:block;">
       <img src="{b}" alt="قدراتك" style="height:30px; width:auto; display:block; margin-inline-start:4px;">
     </a>
     <a class="home-link" href="{home}">🏠 {label}</a>

@@ -37,15 +37,7 @@ def collect_pool(bp):
 
 
 SCREENS = """
-<nav>
-  <div class="wrap nav-row">
-    <a class="brand-mark" href="/" style="text-decoration:none;" aria-label="قدراتك — الصفحة الرئيسية">
-      <img src="%(logo_a)s" alt="قدراتك">
-      <img src="%(logo_b)s" alt="قدراتك" style="height:30px; width:auto; display:block; margin-inline-start:4px;">
-    </a>
-    <a class="home-link" href="/tahsili/">🏠 التحصيلي</a>
-  </div>
-</nav>
+%(nav)s
 
 <section id="screen-start">
   <div class="wrap">
@@ -55,6 +47,7 @@ SCREENS = """
       <p>اختبار موقوت يحاكي الاختبار الحقيقي: عدد الأسئلة نفسه، والتوزيع نفسه على المواد، ونتيجة فورية مع تشخيص لكل مادة.</p>
     </header>
     <div class="track-grid" id="track-grid"></div>
+    <div class="dash-entry"><a href="#" onclick="showScreen('screen-dashboard'); return false;">📊 لوحتي: تشخيصي وسجلي وخطتي وبنك أخطائي ←</a></div>
     <div class="rule-card" style="margin-top:16px;">
       <h3 style="margin:0 0 8px; font-size:15px;">📋 قبل ما تبدأ</h3>
       <ul class="intro-list">
@@ -63,6 +56,73 @@ SCREENS = """
         <li>ما فيه خصم على الإجابة الخاطئة — لا تترك سؤالًا فارغًا.</li>
         <li>النتيجة تظهر فورًا مع تشخيص لكل مادة ومراجعة كاملة للإجابات.</li>
       </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="screen-dashboard" class="hidden">
+  <div class="wrap">
+    <div class="qcard">
+      <div class="qcard-top" style="align-items:center;">
+        <span class="qnum" id="dash-welcome">لوحة التحصيلي</span>
+        <a class="dash-home-btn" href="/tahsili/" style="text-decoration:none;">🏠 التحصيلي</a>
+      </div>
+      <div class="dash-follow">
+        <a href="#" onclick="showScreen('screen-report'); return false;"><span>📊</span>تقرير التشخيص</a>
+        <a href="#" onclick="showScreen('screen-history'); return false;"><span>📅</span>سجل محاولاتي</a>
+        <a href="#" onclick="showScreen('screen-plan'); return false;"><span>🎯</span>خطة اليوم</a>
+        <a href="#" onclick="showScreen('screen-wrong'); return false;"><span>🚩</span>بنك أخطائي</a>
+      </div>
+      <div id="dash-summary" style="margin-top:16px;"></div>
+      <button class="btn" onclick="showScreen('screen-start')" style="margin-top:16px;">ابدأ اختبارًا جديدًا</button>
+    </div>
+  </div>
+</section>
+
+<section id="screen-report" class="hidden">
+  <div class="wrap">
+    <div class="qcard">
+      <div class="qcard-top"><span class="qnum">📊 تقرير التشخيص</span></div>
+      <p class="screen-intro">التشخيص مبني على أدائك في محاكيات التحصيلي الكاملة وتدريبات الدورات — كل سؤال موسوم بمادته وفرعه.</p>
+      <div id="report-body"></div>
+      <button class="btn btn-ghost" onclick="showScreen('screen-dashboard')" style="margin-top:16px;">رجوع</button>
+    </div>
+  </div>
+</section>
+
+<section id="screen-history" class="hidden">
+  <div class="wrap">
+    <div class="qcard">
+      <div class="qcard-top"><span class="qnum">📅 سجل محاولاتي</span></div>
+      <p class="screen-intro">كل محاولة اختبار كاملة تُسجَّل هنا بتاريخها ونتيجتها وأضعف موادها، لتتابع تطورك بمرور الوقت.</p>
+      <div id="history-body"></div>
+      <button class="btn btn-ghost" onclick="showScreen('screen-dashboard')" style="margin-top:16px;">رجوع</button>
+    </div>
+  </div>
+</section>
+
+<section id="screen-plan" class="hidden">
+  <div class="wrap">
+    <div class="qcard">
+      <div class="qcard-top"><span class="qnum">🎯 خطة اليوم</span></div>
+      <p class="screen-intro">توصيات مبنية على أدائك الفعلي — لا ذكاء اصطناعي هنا، بل ترتيب بسيط: الأضعف أداءً أولًا، ثم ما لم تجرّبه بعد.</p>
+      <div id="plan-body"></div>
+      <button class="btn btn-ghost" onclick="showScreen('screen-dashboard')" style="margin-top:16px;">رجوع</button>
+    </div>
+  </div>
+</section>
+
+<section id="screen-wrong" class="hidden">
+  <div class="wrap">
+    <div class="qcard">
+      <div class="qcard-top"><span class="qnum">🚩 بنك أخطائي</span></div>
+      <p class="screen-intro">الأسئلة التي أخطأت فيها في المحاكي تُحفظ هنا بشرحها، لتراجعها قبل الاختبار الحقيقي.</p>
+      <div id="wrong-body"></div>
+      <div class="practice-actions" style="margin-top:14px;">
+        <button class="btn btn-ghost" onclick="clearWrongBank()">تفريغ البنك</button>
+        <button class="btn btn-ghost" onclick="showScreen('screen-dashboard')">رجوع</button>
+      </div>
     </div>
   </div>
 </section>
@@ -105,6 +165,7 @@ SCREENS = """
     <div id="results-body"></div>
     <div class="practice-actions" style="margin-top:16px;">
       <button class="btn" onclick="location.reload()">اختبار جديد</button>
+      <button class="btn btn-ghost" onclick="showScreen('screen-dashboard')">لوحتي</button>
       <a class="btn btn-ghost" href="/tahsili/">العودة للتحصيلي</a>
     </div>
     <h2 class="block-title" style="margin-top:24px;"><span class="tag">مراجعة</span> كل الأسئلة بإجاباتها</h2>
@@ -138,12 +199,25 @@ ENGINE = r"""
     return a;
   }
   function el(id) { return document.getElementById(id); }
+  var SCREENS = ["screen-start", "screen-dashboard", "screen-report", "screen-history",
+                 "screen-plan", "screen-wrong", "screen-exam", "screen-results"];
   function show(id) {
-    ["screen-start", "screen-exam", "screen-results"].forEach(function (s) {
-      el(s).classList.toggle("hidden", s !== id);
-    });
+    SCREENS.forEach(function (s) { el(s).classList.toggle("hidden", s !== id); });
     window.scrollTo(0, 0);
   }
+
+  // شاشة واحدة تُبنى عند فتحها، فالبيانات تُقرأ لحظة العرض لا عند تحميل الصفحة
+  var BUILDERS = {
+    "screen-dashboard": renderDashboard,
+    "screen-report": renderReport,
+    "screen-history": renderHistory,
+    "screen-plan": renderPlan,
+    "screen-wrong": renderWrong
+  };
+  window.showScreen = function (id) {
+    if (BUILDERS[id]) BUILDERS[id]();
+    show(id);
+  };
 
   // ---------------- شاشة البداية: بطاقة لكل مسار
 
@@ -159,7 +233,8 @@ ENGINE = r"""
         '<h3>' + esc(t.name) + '</h3>' +
         '<p class="track-desc">' + esc(t.description) + '</p>' +
         '<ul class="track-subjects">' + rows + '</ul>' +
-        '<div class="track-meta">' + ar(t.total_questions) + ' سؤالًا · ' +
+        // الفاصل النقطي بين رقمين عربيين يلتصق بأولهما بصريًا فيُقرأ ١٦٠٠ بدل ١٦٠
+        '<div class="track-meta">' + ar(t.total_questions) + ' سؤالًا في ' +
           ar(t.duration_minutes) + ' دقيقة</div>' +
         '<div class="track-note">المتاح حاليًا في بنك الأسئلة: ' + ar(have) + ' سؤالًا</div>' +
         '<button class="btn" onclick="startExam(\'' + tid + '\')">ابدأ الاختبار</button>' +
@@ -308,27 +383,26 @@ ENGINE = r"""
       '<h3 style="margin:0 0 10px; font-size:15px;">أداؤك حسب المادة</h3>' + rows + '</div>';
 
     saveDiagnostics(bySubject);
+    addToWrongBank(state.questions.filter(function (q, i) {
+      return state.answers[i] !== q.correct;
+    }).map(function (q) {
+      return { stem: q.stem, options: q.options, correct: q.correct,
+               explanation: q.explanation, subject: q.subject, branch: q.branch };
+    }));
     renderReview();
     show("screen-results");
   }
 
-  function diagKey() {
-    try {
-      var pid = localStorage.getItem("qudurat_current_profile_id");
-      return pid ? "tahsili_exam_history__" + pid : "tahsili_exam_history";
-    } catch (e) { return "tahsili_exam_history"; }
-  }
+  var HISTORY_MAX = 30;
   function saveDiagnostics(bySubject) {
-    try {
-      var hist = JSON.parse(localStorage.getItem(diagKey()) || "[]");
-      hist.unshift({
-        at: Date.now(), track: state.trackId,
-        total: state.questions.length,
-        correct: state.questions.filter(function (q, i) { return state.answers[i] === q.correct; }).length,
-        bySubject: bySubject
-      });
-      localStorage.setItem(diagKey(), JSON.stringify(hist.slice(0, 30)));
-    } catch (e) {}
+    var hist = examHistory();
+    hist.unshift({
+      at: Date.now(), track: state.trackId,
+      total: state.questions.length,
+      correct: state.questions.filter(function (q, i) { return state.answers[i] === q.correct; }).length,
+      bySubject: bySubject
+    });
+    writeJSON(keyFor("tahsili_exam_history"), hist.slice(0, HISTORY_MAX));
   }
 
   function renderReview() {
@@ -350,11 +424,234 @@ ENGINE = r"""
     }).join("");
   }
 
+
+  // ---------------- التخزين: مفاتيح مرتبطة بالحساب كما في مسار القدرات
+
+  function pid() {
+    try { return localStorage.getItem("qudurat_current_profile_id"); } catch (e) { return null; }
+  }
+  function keyFor(base) { var p = pid(); return p ? base + "__" + p : base; }
+  function readJSON(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key) || "null") || fallback; }
+    catch (e) { return fallback; }
+  }
+  function writeJSON(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+
+  function examHistory() { return readJSON(keyFor("tahsili_exam_history"), []); }
+  function courseDiag() { return readJSON(keyFor("tahsili_diagnostics"), {}); }
+  function wrongBank() { return readJSON(keyFor("tahsili_wrong_bank"), []); }
+
+  var WRONG_MAX = 80;
+  function addToWrongBank(items) {
+    var bank = wrongBank();
+    var seen = {};
+    bank.forEach(function (q) { seen[q.stem] = true; });
+    items.forEach(function (q) { if (!seen[q.stem]) { bank.unshift(q); seen[q.stem] = true; } });
+    writeJSON(keyFor("tahsili_wrong_bank"), bank.slice(0, WRONG_MAX));
+  }
+  window.clearWrongBank = function () {
+    if (!confirm("تفريغ بنك الأخطاء نهائيًا؟")) return;
+    writeJSON(keyFor("tahsili_wrong_bank"), []);
+    renderWrong();
+  };
+
+  // ---------------- تجميع الأداء من مصدرين: المحاكي وتدريبات الدورات
+
+  function aggregate() {
+    var bySubject = {}, byBranch = {};
+    examHistory().forEach(function (h) {
+      Object.keys(h.bySubject || {}).forEach(function (name) {
+        var s = bySubject[name] || (bySubject[name] = { total: 0, correct: 0 });
+        s.total += h.bySubject[name].total;
+        s.correct += h.bySubject[name].correct;
+      });
+    });
+    var diag = courseDiag();
+    Object.keys(diag).forEach(function (subject) {
+      var d = diag[subject];
+      var s = bySubject[subject] || (bySubject[subject] = { total: 0, correct: 0 });
+      s.total += d.totalAttempts || 0;
+      s.correct += d.totalCorrect || 0;
+      Object.keys(d.byBranch || {}).forEach(function (b) {
+        var t = byBranch[b] || (byBranch[b] = { total: 0, correct: 0, subject: subject });
+        t.total += d.byBranch[b].total;
+        t.correct += d.byBranch[b].correct;
+      });
+    });
+    return { bySubject: bySubject, byBranch: byBranch };
+  }
+
+  function pct(s) { return s.total ? Math.round(s.correct / s.total * 100) : 0; }
+
+  function bar(label, s) {
+    var p = pct(s);
+    var tone = p >= 70 ? "var(--teal)" : (p >= 50 ? "var(--gold)" : "var(--red)");
+    return '<div class="subject-row">' +
+      '<div class="subject-row-head"><b>' + esc(label) + '</b><span>' +
+      ar(s.correct) + ' / ' + ar(s.total) + ' — ' + ar(p) + '٪</span></div>' +
+      '<div class="subject-bar"><div class="subject-bar-fill" style="width:' + p +
+      '%%; background:' + tone + '"></div></div></div>';
+  }
+
+  function emptyState(msg) {
+    return '<div class="empty-state"><div class="icon">📭</div><h3>لا توجد بيانات بعد</h3>' +
+           '<p>' + esc(msg) + '</p></div>';
+  }
+
+  // ---------------- الشاشات
+
+  function renderDashboard() {
+    var name = "";
+    try {
+      var p = pid();
+      var prof = p && JSON.parse(localStorage.getItem("qudurat_profiles") || "{}")[p];
+      if (prof && prof.name) name = prof.name;
+    } catch (e) {}
+    el("dash-welcome").textContent = name ? "لوحة التحصيلي — أهلًا " + name : "لوحة التحصيلي";
+
+    var hist = examHistory();
+    var agg = aggregate();
+    var subjects = Object.keys(agg.bySubject);
+    if (!hist.length && !subjects.length) {
+      el("dash-summary").innerHTML = emptyState("خُض محاكي اختبار كامل أو تدرّب في الدورات، وستظهر لوحتك هنا.");
+      return;
+    }
+    var last = hist[0];
+    var lastLine = last
+      ? '<div class="rule-card" style="margin-bottom:12px;"><b>آخر محاولة:</b> ' +
+        ar(last.correct) + ' من ' + ar(last.total) + ' — ' +
+        ar(Math.round(last.correct / last.total * 100)) + '٪ في ' +
+        esc(BLUEPRINT[last.track] ? BLUEPRINT[last.track].name : last.track) + '</div>'
+      : "";
+    el("dash-summary").innerHTML = lastLine +
+      '<div class="rule-card"><h3 style="margin:0 0 10px; font-size:15px;">أداؤك حسب المادة</h3>' +
+      (subjects.length ? subjects.map(function (n) { return bar(n, agg.bySubject[n]); }).join("")
+                       : '<p class="screen-intro" style="margin:0;">لا توجد بيانات مواد بعد.</p>') +
+      '</div>';
+  }
+
+  function renderReport() {
+    var agg = aggregate();
+    var subjects = Object.keys(agg.bySubject);
+    if (!subjects.length) {
+      el("report-body").innerHTML = emptyState("خُض محاكي اختبار كامل ليظهر تشخيص حقيقي حسب المادة والفرع.");
+      return;
+    }
+    var branches = Object.keys(agg.byBranch).sort(function (a, b) {
+      return pct(agg.byBranch[a]) - pct(agg.byBranch[b]);
+    });
+    el("report-body").innerHTML =
+      '<div class="rule-card"><h3 style="margin:0 0 10px; font-size:15px;">حسب المادة</h3>' +
+      subjects.map(function (n) { return bar(n, agg.bySubject[n]); }).join("") + '</div>' +
+      (branches.length
+        ? '<div class="rule-card" style="margin-top:12px;">' +
+          '<h3 style="margin:0 0 10px; font-size:15px;">حسب الفرع — من الأضعف</h3>' +
+          branches.map(function (b) {
+            return bar(b + " (" + agg.byBranch[b].subject + ")", agg.byBranch[b]);
+          }).join("") + '</div>'
+        : '<div class="rule-card" style="margin-top:12px;"><p class="screen-intro" style="margin:0;">' +
+          'تفصيل الفروع يظهر بعد التدرّب في صفحات الدورات.</p></div>');
+  }
+
+  var ARABIC_MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+                       "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+  function fmtDate(ts) {
+    var d = new Date(ts);
+    return ar(d.getDate()) + " " + ARABIC_MONTHS[d.getMonth()] + " " + ar(d.getFullYear());
+  }
+
+  function renderHistory() {
+    var hist = examHistory();
+    if (!hist.length) {
+      el("history-body").innerHTML = emptyState("ما خضت محاكيًا كاملًا بعد.");
+      return;
+    }
+    el("history-body").innerHTML = hist.map(function (h) {
+      var p = Math.round(h.correct / h.total * 100);
+      var names = Object.keys(h.bySubject || {});
+      var weakest = names.sort(function (a, b) {
+        return pct(h.bySubject[a]) - pct(h.bySubject[b]);
+      })[0];
+      return '<div class="rule-card" style="margin-bottom:10px;">' +
+        '<div class="subject-row-head"><b>' +
+        esc(BLUEPRINT[h.track] ? BLUEPRINT[h.track].name : h.track) + '</b>' +
+        '<span>' + fmtDate(h.at) + '</span></div>' +
+        '<div style="font-size:14px; margin:6px 0;">' + ar(h.correct) + ' من ' + ar(h.total) +
+        ' — <b>' + ar(p) + '٪</b></div>' +
+        (weakest ? '<div class="screen-intro" style="margin:0;">أضعف مادة: ' +
+                   esc(weakest) + ' (' + ar(pct(h.bySubject[weakest])) + '٪)</div>' : "") +
+        '</div>';
+    }).join("");
+  }
+
+  function renderPlan() {
+    var agg = aggregate();
+    var units = Object.keys(agg.byBranch).map(function (b) {
+      return { name: b, subject: agg.byBranch[b].subject, stat: agg.byBranch[b] };
+    });
+    if (!units.length) {
+      units = Object.keys(agg.bySubject).map(function (n) {
+        return { name: n, subject: n, stat: agg.bySubject[n] };
+      });
+    }
+    if (!units.length) {
+      el("plan-body").innerHTML = emptyState("خُض محاكيًا أو تدرّب في دورة، ثم ارجع لتحصل على خطة مبنية على أدائك.");
+      return;
+    }
+    units.sort(function (a, b) { return pct(a.stat) - pct(b.stat); });
+    var top = units.slice(0, 5);
+    el("plan-body").innerHTML =
+      '<div class="rule-card"><h3 style="margin:0 0 10px; font-size:15px;">ابدأ بهذه اليوم</h3>' +
+      top.map(function (u, i) {
+        var p = pct(u.stat);
+        // عند غياب بيانات الفروع يكون اسم الوحدة هو المادة نفسها، فلا يُكرَّر
+        var where = u.subject === u.name ? "" : esc(u.subject) + " — ";
+        return '<div class="plan-step"><span class="branch-num">' + ar(i + 1) + '</span>' +
+          '<div><b>' + esc(u.name) + '</b>' +
+          '<div class="screen-intro" style="margin:2px 0 0;">' + where +
+          'إتقانك الحالي ' + ar(p) + '٪' +
+          (p < 50 ? ' · يحتاج مراجعة الشرح قبل التدريب' : ' · تدرّب على أسئلة إضافية') +
+          '</div></div></div>';
+      }).join("") + '</div>' +
+      '<div class="rule-card" style="margin-top:12px;"><p class="screen-intro" style="margin:0;">' +
+      'الترتيب من الأضعف إلى الأقوى. راجع شرح الفرع في صفحة دورته ثم عُد لبنك أسئلته.</p></div>';
+  }
+
+  function renderWrong() {
+    var bank = wrongBank();
+    if (!bank.length) {
+      el("wrong-body").innerHTML = emptyState("ما فيه أخطاء محفوظة — أخطاؤك في المحاكي تُحفظ هنا تلقائيًا.");
+      return;
+    }
+    el("wrong-body").innerHTML = bank.map(function (q, i) {
+      return '<div class="mc-question">' +
+        '<div class="mc-stem">' + ar(i + 1) + ') ' + esc(q.stem) +
+        '<span class="mc-diff-badge">' + esc(q.subject) + ' — ' + esc(q.branch) + '</span></div>' +
+        '<div class="mc-options">' +
+        q.options.map(function (o, oi) {
+          return '<div class="mc-option ' + (oi === q.correct ? "correct" : "") + '">' + esc(o) + '</div>';
+        }).join("") + '</div>' +
+        (q.explanation ? '<div class="mc-feedback"><div class="course-explain">' +
+                          esc(q.explanation) + '</div></div>' : "") +
+        '</div>';
+    }).join("");
+  }
+
   renderTracks();
 })();
 """
 
 EXTRA_CSS = """
+  /* أنماط المحاكي لا تعرّف شريط ترويسة (nav) ولا محاذاته، فتُضاف هنا
+     ليطابق شكل بقية صفحات الموقع بدل أن يظهر بلا شريط ولا حدّ. */
+  nav { position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+  nav .nav-row { display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; margin-top: 0; }
+  nav .home-link { font-size: 14px; font-weight: 700; color: var(--teal); text-decoration: none; }
   .track-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
   .track-card { background: var(--paper); border: 1px solid var(--border); border-radius: 14px;
     padding: 18px; box-shadow: var(--shadow); }
@@ -373,6 +670,18 @@ EXTRA_CSS = """
   .subject-bar { height: 8px; background: var(--bg); border-radius: 6px; overflow: hidden; }
   .subject-bar-fill { height: 100%; background: var(--teal); border-radius: 6px; }
   .hidden { display: none !important; }
+  .screen-intro { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 18px; }
+  .dash-entry { margin-top: 16px; text-align: center; }
+  .dash-entry a { font-size: 14px; font-weight: 700; color: var(--teal); text-decoration: none; }
+  .dash-follow { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .dash-follow a { display: flex; align-items: center; gap: 8px; padding: 12px 14px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+    font-size: 14px; font-weight: 700; color: inherit; text-decoration: none; }
+  .dash-follow a:hover { border-color: var(--teal); }
+  .dash-home-btn { font-size: 13px; font-weight: 700; color: var(--teal); }
+  .plan-step { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0;
+    border-bottom: 1px solid var(--border); }
+  .plan-step:last-child { border-bottom: 0; }
 """
 
 
@@ -381,8 +690,7 @@ def build(bp, pools):
                        ("name", "short", "description", "total_questions",
                         "duration_minutes", "subjects")}
                  for tid, t in bp["tracks"].items()}
-    logo_a, logo_b = chrome.logos()
-    body = SCREENS % {"logo_a": logo_a, "logo_b": logo_b}
+    body = SCREENS % {"nav": bt.nav("/tahsili/", "التحصيلي")}
     engine = ENGINE % {
         "pools": json.dumps(pools, ensure_ascii=False),
         "blueprint": json.dumps(blueprint, ensure_ascii=False),

@@ -12,21 +12,6 @@ import entitlement  # noqa: E402
 SITE = bt.SITE
 
 
-def nav(label="الصفحة الرئيسية", href="/"):
-    a, b = chrome.logos()
-    return f"""
-<nav>
-  <div class="wrap nav-row">
-    <a class="brand-mark" href="/" style="text-decoration:none;" aria-label="قدراتك — الصفحة الرئيسية">
-      <img src="{a}" alt="قدراتك">
-      <img src="{b}" alt="قدراتك" style="height:30px; width:auto; display:block; margin-inline-start:4px;">
-    </a>
-    <a class="home-link" href="{href}">🏠 {label}</a>
-  </div>
-</nav>
-"""
-
-
 def footer(label):
     return (f'\n  <footer style="padding:30px 0 40px; text-align:center; font-size:12.5px; '
             f'color:var(--ink-soft);">\n'
@@ -77,7 +62,7 @@ def build_landing(bp, stats):
         "محاكي اختبار موقوت بالتوزيع الرسمي، وبنك أسئلة مع شرح لكل سؤال.",
         SITE + "/tahsili/",
         LANDING_CSS,
-    ) + nav() + f"""
+    ) + bt.nav("/", "الصفحة الرئيسية") + f"""
 <div class="wrap">
   <header class="path-header">
     <div class="eyebrow"><span>مسار التحصيلي</span></div>
@@ -236,7 +221,7 @@ def build_bank(bp, subjects):
         "بنك أسئلة التحصيلي: تصفّح أسئلة كل مادة وفرع في القسمين العلمي والأدبي، "
         "بلا مؤقّت ومع شرح لكل سؤال.",
         SITE + "/tahsili/question-bank/",
-    ).replace("<style>" + chrome.course_css(), "<style>" + chrome.bank_css()) + nav("التحصيلي", "/tahsili/") + f"""
+    ).replace("<style>" + chrome.course_css(), "<style>" + chrome.bank_css()) + bt.nav("/tahsili/", "التحصيلي") + f"""
 <div class="wrap">
   <header class="path-header">
     <div class="eyebrow">
