@@ -85,3 +85,11 @@ def simulator_assistant():
     if start < 0 or end < 0:
         raise RuntimeError("علامات وحدة المساعد الذكي غير موجودة في صفحة المحاكي")
     return html[start:end + len("<!-- AI-ASSISTANT-MODULE:END -->")]
+
+
+REF_BANK = os.path.join(ROOT, "question-bank", "index.html")
+
+
+def bank_css():
+    """ورقة أنماط بنك الأسئلة المشتركة."""
+    return _blocks(read(REF_BANK), "style")[0][2]
